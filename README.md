@@ -51,3 +51,13 @@ Each week, the process for submitting your assignments is as follows:
 ### Questions?
 
 If you have any questions about how this works, or about any individual assignments, please ask in the course Slack channel, or ping your mentor, or open an issue in the Python 200 repo. We are here to help!
+
+Notes:
+
+- Install and start virtual env
+  ```python --version
+  python -m venv <custom_name>
+  source <custom_name>/Scripts/activate
+  ```
+- Create requirements.txt file and add all dependencies as per required
+  pip install -r requirements.txt
