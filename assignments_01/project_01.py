@@ -334,11 +334,12 @@ def analyze_correlaltion(df: pd.DataFrame) -> dict:
 
     # explanatory variables to correlate with happiness
     explanatory_vars = [
-        'GDP per capita,Social support',
+        'GDP per capita',
+        'Social support',
         'Healthy life expectancy',
         'Freedom to make life choices',
         'Generosity',
-        'Perceptions of corruptio'
+        'Perceptions of corruption'
     ]
 
     # filter cols
@@ -536,7 +537,7 @@ def generate_summary_report(
 
 
 @flow
-def happiness_piepeline():
+def happiness_pipeline():
     logger = get_run_logger()
 
     # Task 1: Load and merge the data
@@ -569,4 +570,4 @@ def happiness_piepeline():
 
 
 if __name__ == "__main__":
-    happiness_piepeline()
+    happiness_pipeline()
