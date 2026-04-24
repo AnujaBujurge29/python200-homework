@@ -59,7 +59,7 @@ print(df[["name", "city"]])
 # Pandas Question 7:
 print("\n----------------------Pandas Question 7--------------------------------------")
 sorted_df = df.sort_values(by="grade", ascending=False)
-print(f"Sorted DF:\n{sorted_df.head}")
+print(f"Sorted DF:\n{sorted_df.head()}")
 print(f"\nSorted DF first 3 rows:\n{sorted_df.head(3)}")
 
 # =====================================================================================
@@ -212,7 +212,7 @@ print(f"Mean: {np.mean(data1)}")
 print(f"Median: {np.median(data1)}")
 print(f"Mode: {stats.mode(data1, keepdims=True)[0][0]}")
 
-print(f"\nData 2: {data1}")
+print(f"\nData 2: {data2}")
 print(f"Mean: {np.mean(data2)}")
 print(f"Median: {np.median(data2)}")
 print(f"Mode: {stats.mode(data2, keepdims=True)[0][0]}")
