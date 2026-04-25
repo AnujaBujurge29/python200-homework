@@ -53,13 +53,13 @@ print("-" * 100)
 # Standard scalar
 scalar = StandardScaler()
 X_train_scaled = scalar.fit_transform(X_train)
-X_test_scaled = scalar.fit_transform(X_test)
+X_test_scaled = scalar.transform(X_test)
 
 print(f"Mean of each column in X_train_scaled: {X_train_scaled.mean(axis=0)}")
 
-# We fir the scalr on X_train only to prevent data leakage
-# if we fir on the full dataset, test-set statitics would infuence the scaling,
-# giving on overly optimistic estimate of model performance
+# We fit the scaler on X_train only to prevent data leakage.
+# The test set should use transform() only so it is scaled with the same
+# parameters learned from the training data.
 
 # =====================================================================================
 #                                     KNN
