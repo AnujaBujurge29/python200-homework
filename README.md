@@ -60,4 +60,4 @@ Notes:
   source <custom_name>/Scripts/activate
   ```
 - Create requirements.txt file and add all dependencies as per required
-  pip install -r requirements.txt
+  uv pip install -r requirements.txt
