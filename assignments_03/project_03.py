@@ -155,7 +155,7 @@ X = df.drop(columns=["spam_label"])
 y = df["spam_label"]
 
 X_train, X_test, y_train, y_test = train_test_split(
-    X, y, test_size=0.2, stratify=y, random_state=2)
+    X, y, test_size=0.2, stratify=y, random_state=42)
 
 print(f"X_train: {X_train.shape}")
 print(f"X_test: {X_test.shape}")

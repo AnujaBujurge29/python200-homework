@@ -8,6 +8,7 @@ from sklearn.decomposition import PCA
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.tree import DecisionTreeClassifier
 from sklearn.linear_model import LogisticRegression
+from sklearn.multiclass import OneVsRestClassifier
 from sklearn.metrics import (
     accuracy_score,
     classification_report,
@@ -106,6 +107,21 @@ print(f"Fold Scores: {cv_scores}")
 print(f"Mean: {cv_scores.mean():.4f}")
 print(f"Std:  {cv_scores.std():.4f}")
 
+# Comment: 5-fold cross-validation is MORE TRUSTWORTHY than a single train/test split.
+# Here's why:
+# 1. Multiple evaluations: CV uses 5 different train/test splits, not just one. This
+#    provides multiple independent estimates of model performance.
+# 2. Less variance: A single train/test split's score can be misleading due to random
+#    variation in which samples end up in train vs test. CV averages over these variations.
+# 3. Better generalization estimate: The mean CV score gives a more robust estimate of
+#    how the model will perform on unseen data.
+# 4. Stability insight: The standard deviation shows how sensitive the model is to
+#    different data splits. Lower std means more stable/reliable performance.
+# 5. Better data usage: In a single split, we "waste" data (only training on 80%). CV
+#    trains on ~80% in each fold, but uses all data for evaluation.
+# Single train/test split can be heavily influenced by luck—which samples randomly ended
+# up in each set. CV smooths out this randomness.
+
 # KNN Question 4:
 print("\n")
 print("-" * 100)
@@ -181,12 +197,11 @@ print("Logistic Regression Question 1")
 print("-" * 100)
 
 for C_val in [0.01, 1.0, 100]:
-    lr = LogisticRegression(C=C_val, max_iter=1000, solver='lbfgs')
-    # ValueError: The 'liblinear' solver does not support multiclass classification (n_classes >= 3).
-    # Either use another solver or wrap the estimator in a OneVsRestClassifier to keep applying a one-versus-rest scheme.
-
-    # So changedc'liblinear' to 'lbfgs'
-
+    # Use OneVsRestClassifier to wrap LogisticRegression with solver='liblinear'
+    # liblinear only supports binary classification, so OneVsRestClassifier enables
+    # multiclass classification by training one binary classifier per class.
+    lr = OneVsRestClassifier(LogisticRegression(
+        C=C_val, max_iter=1000, solver='liblinear'))
     lr.fit(X_train_scaled, y_train)
     coef_sum = np.abs(lr.coef_).sum()
     print(f"C = {C_val:6.2f}  Total - COEF = {coef_sum:.4f}")
@@ -245,6 +260,19 @@ ax.set_title("PCA 2D Projection")
 fig.savefig("outputs/pca_2d_projection.png")
 
 plt.close(fig)
+
+# Comment: YES, same-digit images DO tend to cluster together in this 2D space.
+# Each digit (color) forms its own region or neighborhood, showing that images of the same
+# digit share similar underlying patterns captured by PC1 and PC2. This makes sense because:
+# 1. Digits of the same value have consistent structural features (e.g., all 0s are circles,
+#    all 8s have two loops, all 7s have a horizontal bar at top).
+# 2. PC1 and PC2 capture the largest sources of variance in the pixel data, and these often
+#    correspond to structural differences between digit types.
+# 3. Some overlap occurs between similar-looking digits (e.g., 0 and 8, or 1 and 7),
+#    which makes sense visually.
+# This clustering demonstrates that PCA successfully captures meaningful structure in the
+# digit images and that handwritten digits are indeed separable in the space of principal
+# components -- which is why machine learning models can classify them effectively.
 
 # PCA Question 3:
 print("\n")
