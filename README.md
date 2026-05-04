@@ -60,8 +60,4 @@ Notes:
   source <custom_name>/Scripts/activate
   ```
 - Create requirements.txt file and add all dependencies as per required
-  pip install -r requirements.txt
-- Activate venv
-  source .vir_env/Scripts/activate
-- In dir 'python-200' - 
-  git pull upstream main 
+  uv pip install -r requirements.txt
