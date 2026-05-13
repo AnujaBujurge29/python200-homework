@@ -207,10 +207,11 @@ documents = {
 }
 
 result = simple_keyword_retrieval(query, documents, verbose=True)
+# print(f"Sel: {result}")
 print(f"Qu 1: Selected Document: {result[0][0]}")
 
-# Selected Document is "loyalty.txt" as with this exact token-overlap example,
-# it is ths best match returned by the retrival fucntion for the printed output.
+# Selected Document is "hours.txt" as it has the strongest token overlap with query
+# query token 'hours' and 'weekend' both appears in hours.txt
 
 # =====================================================================================
 # Keyword Question 2
@@ -383,7 +384,7 @@ for top_k in [1, 5]:
     print(f"Question: {comapre_qu}")
 
     engine = index.as_query_engine(similarity_top_k=top_k)
-    response = query_engine.query(comapre_qu)
+    response = engine.query(comapre_qu)
     print(f"Answer: {response}")
 
     print(f"\nSource nodes:")
@@ -407,10 +408,6 @@ print('-'*100)
 print("--------------- LlamaIndex Question 3 ---------------")
 print('-'*100)
 
-# =====================================================================================
-# LlamaIndex Question 4
-# =====================================================================================
-
 # Try a query that the pipeline may struggle with.
 hard_query = "How does BrightLeaf compare to other solar companies in market share and customer satisfaction?"
 
@@ -429,7 +426,6 @@ for i, node in enumerate(hard_response.source_nodes, 1):
     snippet = node.get_content()[:150].replace("\n", " ")
     print(f"  [{i}] score={score_text}  text: {snippet}...")
 
-
 # Reflection:
 # Expected:
 # This query should be hard because it asks for market-share/customer-satisfaction
@@ -438,6 +434,10 @@ for i, node in enumerate(hard_response.source_nodes, 1):
 # and the model may hedge or answer partially from limited context.
 # Improvement ideas: Add external industry data sources, use metadata filtering by document type,
 # and add a confidence/abstention rule so the system says "not enough evidence" when context is weak.
+
+# =====================================================================================
+# LlamaIndex Question 4
+# =====================================================================================
 
 print('-'*100)
 print("--------------- LlamaIndex Question 4 ---------------")
