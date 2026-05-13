@@ -58,7 +58,7 @@ print("-" * 100)
 index = VectorStoreIndex.from_documents(documents)
 query_engine = index.as_query_engine(similarity_top_k=3)
 
-print(f"Index build successfully")
+print(f"Index built successfully")
 
 # ------------------------------------------------------------------------------------
 #  Step 4: Query the Assistant
@@ -95,12 +95,17 @@ for i, question in enumerate(questions, 1):
     else:
         print("\n(No source nodes retrieved)")
 
-# Reflection on the responses:
-# After running all queries, consider:
-# - Did the assistant sound confident in its answers, or did it hedge with phrases like "based on the provided information"?
-# - Were the retrieved documents actually relevant to each question?
-# - Did any answer surprise you — either because it was accurate or inaccurate?
-# - Which queries seemed easiest vs. hardest for the RAG system?
+# Step 4 reflection (observations from the five queries):
+# - Tone/confidence: The assistant was mostly confident on operational questions (hours, loyalty,
+#    catering/wholesale). It hedged more on company-history details when source text was thinner.
+# - Most relevant sources: Hours and menu-related docs were the strongest matches for weekend hours
+#    and dairy-free milk options. The loyalty doc was highly relevant for rewards-program questions.
+# - Least relevant sources: On broader questions (company origin), one or more retrieved chunks were
+#    only tangentially related and added generic context rather than direct evidence.
+# - Surprising behavior: Some answers still sounded polished even when the top chunk was only a partial
+#    match, which is a reminder that fluent output can hide weak retrieval grounding.
+# - Easiest vs hardest: Easiest were explicit fact queries (hours, milk options, loyalty mechanics).
+#    Hardest were narrative/comparative queries (origin story and broader business capabilities).
 
 
 # ------------------------------------------------------------------------------------
