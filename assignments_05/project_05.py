@@ -307,7 +307,7 @@ def run_chatbot():
             messages.append({"role": "user", "content": user_input})
             reply = get_completion(messages)
             print(f"\nJob Application Helper: {reply}")
-            messages.append({"role": "user", "content": reply})
+            messages.append({"role": "assistant", "content": reply})
 
 
 if __name__ == "__main__":

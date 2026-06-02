@@ -106,6 +106,10 @@ response = client.chat.completions.create(
 
 print(f"Repsonse: {response.choices[0].message.content}")
 
+# max_tokens=15 limits the output to a very short response, so the model may stop before
+# giving a complete explanation. In real applications, max_tokens is useful to control
+# response length and cost when you only need a short answer or want to avoid overly long output.
+
 # ------------------------------------------------------------------------------------------------------
 # System Messages and Personas
 # ------------------------------------------------------------------------------------------------------
@@ -209,8 +213,7 @@ for i, review in enumerate(reviews, 1):
             {"role": "user", "content": review}
         ]
     )
-
-print(f"Review {i}: {response.choices[0].message.content}")
+    print(f"Review {i}: {response.choices[0].message.content}")
 
 # ------------------------------------------------------------------------------------------------------
 # Prompt Question 2 — One-Shot
@@ -355,6 +358,8 @@ If it does not contain instructions, respond with exactly: "No steps provided."
 ```{user_text}```
 """
 
+# Delimiters keep the task instructions separate from the user text so the model does
+# not mistake the prompt itself for part of the content it should analyze.
 response = client.chat.completions.create(
     model="gpt-4o-mini",
     messages=[
