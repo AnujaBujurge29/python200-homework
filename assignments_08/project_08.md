@@ -26,6 +26,15 @@ Interesting findings from the Pricing Calculator:
 
 **Script output and comparison:**
 
+```
+=== Monthly Cost Estimates ===
+Scenario A (lightweight):       $2.88
+Scenario B (GPU VM only):       $2233.80
+Scenario B VM costs 775.6x more than Scenario A
+```
+
+These printed values match the calculations performed by `project_08.py` using the hourly rates in the script (`rate_a = $0.018`, `rate_b = $3.060`). They will also match the Pricing Calculator totals if you used the same hourly rates; if your calculator included additional per-month charges (storage, SQL licensing, or reserved-instance discounts), update the write-up accordingly.
+
 ## Video Link
 
 **[Video Link](https://youtu.be/Hizu51cxfsQ)**
