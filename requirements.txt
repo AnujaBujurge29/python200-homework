@@ -33,3 +33,8 @@ pgvector
 
 # --- AI Agents (Week 7) ---
 smolagents
+
+# --- Cloude AI (Week 9) ---
+azure-identity
+azure-mgmt-resource
+azure-storage-blob
