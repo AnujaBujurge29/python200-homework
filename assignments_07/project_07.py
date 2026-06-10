@@ -50,33 +50,36 @@ print('='*100)
 def load_happiness_data() -> dict:
     """Load the World Happiness dataset into memory.
     ...
-    Loads the merged CSV from DATA_PATH. If that file does not exits,
+    Loads the merged CSV from DATA_PATH. If that file does not exist,
     falls back to loading and merging all yearly CSVs from the happiness
-    project resounces folder.
+    project resources folder.
 
     Return:
-        A dict with "shape" (yuple of rows and columns) and "columns"
+        A dict with "shape" (tuple of rows and columns) and "columns"
         (list of column names), or an error dict if loading fails.
     """
 
     global df
 
     path = Path(DATA_PATH)
-    if path.exists():
-        df = pd.read_csv(path)
-    else:
-        resouces_dir = Path(
-            "../../python-200/assignments/resources/happiness_project")
-        if not resouces_dir.exists():
-            return {"error": f"Neither '{DATA_PATH}' now fallback directory found."}
-        csv_files = sorted(resouces_dir.glob("*.csv"))
-        if not csv_files:
-            return {"error": "No CSV files found in fallback directory"}
-        frames = []
-        for csv_file in csv_files:
-            frame = pd.read_csv(csv_file)
-            frames.append(frame)
-        df = pd.concat(frames, ignore_index=True)
+    try:
+        if path.exists():
+            df = pd.read_csv(path)
+        else:
+            resources_dir = Path(
+                "../../python-200/assignments/resources/happiness_project")
+            if not resources_dir.exists():
+                return {"error": f"Neither '{DATA_PATH}' nor fallback directory found."}
+            csv_files = sorted(resources_dir.glob("*.csv"))
+            if not csv_files:
+                return {"error": "No CSV files found in fallback directory"}
+            frames = []
+            for csv_file in csv_files:
+                frames.append(pd.read_csv(csv_file))
+            df = pd.concat(frames, ignore_index=True)
+    except Exception as err:
+        return {"error": f"Failed to load CSV data: {err}"}
+
     return {
         "shape": df.shape,
         "columns": df.columns.tolist()
