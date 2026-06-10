@@ -1,3 +1,4 @@
+# Video Link: https://youtu.be/JyQyoW781EE
 import os
 import requests
 import json
@@ -120,9 +121,10 @@ df = pd.DataFrame(downloaded_data['hourly'])
 print(df.head())
 
 # Save the downloaded JSON to outputs/weather_raw.json
-DATA_PATH = "../assignments_09/outputs"
+# DATA_PATH = "../assignments_09/outputs"
+path = Path(__file__).parent / "outputs"
 
-path = Path(DATA_PATH)
+# path = DATA_PATH
 path.mkdir(parents=True, exist_ok=True)
 
 output_path = path / "weather_raw.json"
