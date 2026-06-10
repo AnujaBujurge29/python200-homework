@@ -27,7 +27,7 @@ print('='*100)
 print("---------------------- Setup ----------------------")
 print('='*100)
 
-ACCOUNT_URL = "https://anujactd2026sa.blob.core.windows.net/"
+ACCOUNT_URL = "https://anujactd2026sa.blob.core.windows.net"
 CONTAINER = "pipeline-data"
 
 print("Setup Completed.")
@@ -64,7 +64,7 @@ print("=> Step 2: Serialize -- Convert the API response to JSON bytes")
 print('-'*100)
 
 weather_bytes = json.dumps(weather_data).encode('utf-8')
-print(f"Sterized Data size: {len(weather_bytes)} bytes.")
+print(f"Serialize Data size: {len(weather_bytes)} bytes.")
 
 # =====================================================================================
 # Step 3: Load
