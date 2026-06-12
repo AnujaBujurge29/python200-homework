@@ -6,6 +6,17 @@ import os
 import json
 from openai import OpenAI
 from dotenv import load_dotenv
+from datetime import date
+
+
+# Demo video: Link
+"""
+Reflection: Classifying weather for outdoor running with an LLM was OVERKILL for this specific task.
+An LLM adds cost and latency for what could be a simple rule-based system. A deterministic
+approach (e.g., temp > 15°C and precip < 1mm -> good) would be faster, cheaper, and more
+predictable. However, the LLM approach can handle edge cases intuitively and is useful
+for demos or complex multi-factor decisions.
+"""
 
 # Load environment variables from .env file
 load_dotenv()
@@ -42,24 +53,39 @@ print("=> Step 1: Read weather data")
 print('-'*100)
 
 
-# Try to load the weather data from Week 9
-weather_file = "../assignments_09/outputs/weather_raw.json"
-
+# Attempt to download today's raw weather JSON from Blob Storage first,
+# falling back to the local Week 9 output or the lessons resource file.
+weather_data = None
+blob_raw_path = f"raw/{date.today().isoformat()}/weather.json"
 try:
-    with open(weather_file, 'r') as f:
-        weather_data = json.load(f)
-    print(f"✓ Loaded weather data from {weather_file}")
-except FileNotFoundError:
-    # Fallback to the resource dataset
-    fallback_file = "../../python-200/assignments/resources/weather_raw.json"
-    print(f"✗ {weather_file} not found, trying fallback...")
+    credentials = DefaultAzureCredential()
+    blob_service_client = BlobServiceClient(
+        account_url=ACCOUNT_URL, credential=credentials)
+    container_client = blob_service_client.get_container_client(CONTAINER)
+    blob_client = container_client.get_blob_client(blob_raw_path)
+
+    print(f"Attempting to download blob: {blob_raw_path}")
+    downloaded = blob_client.download_blob().readall().decode('utf-8')
+    weather_data = json.loads(downloaded)
+    print(f"Loaded weather data from blob {blob_raw_path}")
+except Exception:
+    # Fallback to local file saved by Week 9
+    weather_file = "../assignments_09/outputs/weather_raw.json"
     try:
-        with open(fallback_file, 'r') as f:
+        with open(weather_file, 'r') as f:
             weather_data = json.load(f)
-        print(f"✓ Loaded fallback weather data from {fallback_file}")
+        print(f"Loaded weather data from {weather_file}")
     except FileNotFoundError:
-        print(f"✗ No weather data found. Please check file paths.")
-        weather_data = None
+        # Fallback to the resource dataset
+        fallback_file = "../../python-200/assignments/resources/weather_raw.json"
+        print(f"{weather_file} not found, trying fallback...")
+        try:
+            with open(fallback_file, 'r') as f:
+                weather_data = json.load(f)
+            print(f"Loaded fallback weather data from {fallback_file}")
+        except FileNotFoundError:
+            print(f"No weather data found. Please check file paths.")
+            weather_data = None
 
 # Parse and reshape the hourly data
 if weather_data:
@@ -78,8 +104,8 @@ if weather_data:
         }
         records.append(record)
 
-    print(f"✓ Reshaped {len(records)} hourly records")
-    print(f"  First record: {records[0]}")
+    print(f"Reshaped {len(records)} hourly records")
+    print(f"First record: {records[0]}")
     print()
 
 # =====================================================================================
@@ -138,16 +164,16 @@ for idx, record in enumerate(records_to_process, 1):
 
         # Print progress every 6 records
         if idx % 6 == 0:
-            print(f"✓ Processed {idx} records")
+            print(f"Processed {idx} records")
 
     except Exception as e:
-        print(f"✗ Error processing record {idx}: {str(e)}")
+        print(f"Error processing record {idx}: {str(e)}")
         record["running_classification"] = "unknown"
         classified_records.append(record)
 
 print()
 print(
-    f"✓ Classification complete. Processed {len(classified_records)} records")
+    f"Classification complete. Processed {len(classified_records)} records")
 print()
 
 # Show sample results
@@ -200,10 +226,10 @@ try:
     blob_client.upload_blob(blob_data, overwrite=True)
 
     print(
-        f"✓ Uploaded {len(enriched_records)} enriched records to {blob_path}")
+        f"Uploaded {len(enriched_records)} enriched records to {blob_path}")
 except Exception as e:
     # Fall back to local-only workflow but keep enriched_records
-    print(f"✗ Error uploading to Blob Storage: {str(e)}")
+    print(f"Error uploading to Blob Storage: {str(e)}")
     print("Proceeding with local files only.")
 
 print()
@@ -232,7 +258,7 @@ try:
     # Load into DataFrame
     df = pd.DataFrame(downloaded_records)
 
-    print("✓ Downloaded and loaded into DataFrame")
+    print("Downloaded and loaded into DataFrame")
     print()
     print("Conditions value counts:")
     print(df["conditions"].value_counts())
@@ -280,25 +306,3 @@ print()
 # print('='*100)
 # print("Pipeline complete!")
 # print('='*100)
-
-# =====================================================================================
-# Step 6: Reflect
-# =====================================================================================
-
-print('-'*100)
-print("=> Step 6: Reflect")
-print('-'*100)
-
-# =====================================================================================
-# Reflection: Was LLM the Right Choice?
-# =====================================================================================
-#
-# Classifying weather for outdoor running with an LLM was OVERKILL for this specific task.
-# An LLM adds cost and latency for what could be a simple rule-based system. A deterministic
-# approach (e.g., temp > 15°C and precip < 1mm → good) would be faster, cheaper, and more
-# predictable. However, the LLM approach has advantages: it can handle edge cases intuitively
-# (e.g., "freezing rain" or "extreme heat"), it's interpretable to non-technical stakeholders,
-# and it scales to more complex scenarios (humidity, wind, UV index). For a production system
-# at scale, rules would likely be better; for a one-off demo or exploratory analysis, the LLM
-# is reasonable.
-#
