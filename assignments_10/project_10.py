@@ -203,7 +203,8 @@ for record in classified_records:
     enriched_records.append(enriched_record)
 
 # Upload to Blob Storage using DefaultAzureCredential (if available)
-blob_path = f"{ACCOUNT_URL}/{CONTAINER}/processed/weather_classified.json"
+processed_blob_relpath = f"processed/{date.today().isoformat()}/weather_classified.json"
+blob_path = f"{ACCOUNT_URL}/{CONTAINER}/{processed_blob_relpath}"
 try:
     credentials = DefaultAzureCredential()
     blob_service_client = BlobServiceClient(
@@ -218,8 +219,7 @@ try:
         container_client.create_container()
         print(f"Container '{CONTAINER}' created successfully.")
 
-    blob_client = container_client.get_blob_client(
-        "processed/weather_classified.json")
+    blob_client = container_client.get_blob_client(processed_blob_relpath)
 
     # Convert to JSON and upload with overwrite
     blob_data = json.dumps(enriched_records, indent=2)
@@ -249,8 +249,7 @@ try:
     blob_service_client = BlobServiceClient(
         account_url=ACCOUNT_URL, credential=credentials)
     container_client = blob_service_client.get_container_client(CONTAINER)
-    blob_client = container_client.get_blob_client(
-        "processed/weather_classified.json")
+    blob_client = container_client.get_blob_client(processed_blob_relpath)
 
     blob_data = blob_client.download_blob().readall().decode('utf-8')
     downloaded_records = json.loads(blob_data)
