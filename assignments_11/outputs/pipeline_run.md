@@ -1,0 +1,3 @@
+# Week 11 Pipeline Run Reflection
+
+The pipeline did not run cleanly on the first try because I had to verify the correct Azure storage path and ensure the OpenAI interface returned valid single-word classifications. Once the API call was confirmed and the blob path corrected, the Prefect tasks completed successfully. The Prefect UI showed all three tasks as Completed, and there were no retries triggered during the successful run. If I were deploying this pipeline to a daily schedule, I would add robust monitoring and alerting, plus a versioned output path or soft delete safety to avoid overwriting data unintentionally.
